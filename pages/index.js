@@ -1,8 +1,7 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, Collapse, Divider } from "@geist-ui/react";
-import Image from "next/image";
 
 export default function Home() {
 	const [data, setData] = useState([]);
@@ -130,9 +129,17 @@ export default function Home() {
 			</main>
 
 			<footer className={styles.footer}>
-				<span>Developed by</span>{" "}
+				<span>Developed by</span>
 				<a href="https://garytou.com" target="_blank" rel="noopener noreferrer">
 					Gary Tou
+				</a>
+				<span style={{ margin: "0 0.5em" }}>|</span>
+				<a
+					href="https://github.com/garyhtou/wafbla-cc-submission-viewer"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					GitHub
 				</a>
 			</footer>
 		</div>
