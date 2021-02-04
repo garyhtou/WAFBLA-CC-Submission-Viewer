@@ -1,65 +1,140 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
+import { useState, useEffect } from "react";
+import { Card, Collapse, Divider } from "@geist-ui/react";
+import Image from "next/image";
 
 export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+	const [data, setData] = useState([]);
+	const challenges = [
+		"Challenge #1",
+		"Challenge #2",
+		"Challenge #3",
+		"Challenge #4",
+		"Challenge #5",
+	];
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+	function csvJSON(csv) {
+		// https://stackoverflow.com/questions/27979002/convert-csv-data-into-json-format-using-javascript
+		var lines = csv.split("\n");
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+		var result = [];
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+		// NOTE: If your columns contain commas in their values, you'll need
+		// to deal with those before doing the next step
+		// (you might convert them to &&& or something, then covert them back later)
+		// jsfiddle showing the issue https://jsfiddle.net/
+		var headers = lines[0].split(",");
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+		for (var i = 1; i < lines.length; i++) {
+			var obj = {};
+			var currentline = lines[i].split(",");
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+			for (var j = 0; j < headers.length; j++) {
+				obj[headers[j]] = currentline[j];
+			}
 
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+			result.push(obj);
+		}
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+		console.log(result);
+
+		// return result; //JavaScript object
+		return JSON.parse(JSON.stringify(result)); //JSON
+	}
+
+	return (
+		<div className={styles.container}>
+			<Head>
+				<title>WA FBLA Connections Challange Submission Viewer</title>
+			</Head>
+
+			<main className={styles.main}>
+				<h1 className={styles.title}>
+					WA FBLA <span>Connections Challange</span> Submission Viewer!
+				</h1>
+
+				<form className={styles.form}>
+					<p className={styles.description}>
+						Get started entering pasting the CSV from the submission:
+					</p>
+					<textarea
+						id="data"
+						placeholder="CSV here!"
+						onChange={(event) => setData(csvJSON(event.target.value))}
+						className={styles.textarea}
+						rows={5}
+					></textarea>
+				</form>
+
+				<div className="submissions-container">
+					{data.map((row) => (
+						<Card key={row["Entry Id"]} style={{ margin: "1em 0" }}>
+							<Card.Content
+								style={{
+									display: "flex",
+									flexDirection: "row",
+								}}
+							>
+								<h3>
+									{row["Name"]} {row["Last"]}
+								</h3>
+								<p style={{ flexGrow: "1", textAlign: "right", margin: "0" }}>
+									<strong>Entry Id:</strong> #{row["Entry Id"]}
+								</p>
+							</Card.Content>
+							<Divider y={0} />
+							<Card.Content>
+								<div style={{ marginBottom: "2em" }}>
+									<p>
+										<strong>Grade: </strong>
+										{row["Grade"]}
+									</p>
+									<p>
+										<strong>Email: </strong>
+										{row["Email"]}
+									</p>
+									<p>
+										<strong>Chapter: </strong>
+										{row["Chapter"]}
+									</p>
+									<p>
+										<strong>Region: </strong>
+										{row["Select Your Region"]}
+									</p>
+									<p>
+										<strong>
+											Have you submitted challenges for a previous month?:{" "}
+										</strong>
+										{row["Have you submitted challenges for a previous month?"]}
+									</p>
+								</div>
+								<Collapse.Group>
+									{challenges.map((name) => (
+										<>
+											<Collapse
+												title={<h5>{name}</h5>}
+												style={{ maxWidth: "100%", maxHeight: "80%vh" }}
+											>
+												{row[name] && row[name] !== "" ? (
+													<img src={row[name]} />
+												) : null}
+											</Collapse>
+										</>
+									))}
+								</Collapse.Group>
+							</Card.Content>
+						</Card>
+					))}
+				</div>
+			</main>
+
+			<footer className={styles.footer}>
+				<span>Developed by</span>{" "}
+				<a href="https://garytou.com" target="_blank" rel="noopener noreferrer">
+					Gary Tou
+				</a>
+			</footer>
+		</div>
+	);
 }
