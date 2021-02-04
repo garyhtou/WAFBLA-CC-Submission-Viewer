@@ -117,7 +117,9 @@ export default function Home() {
 											>
 												{row[name] && row[name] !== "" ? (
 													<img src={row[name]} />
-												) : null}
+												) : (
+													<p>No Image...</p>
+												)}
 											</Collapse>
 										</>
 									))}
