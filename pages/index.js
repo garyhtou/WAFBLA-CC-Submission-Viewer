@@ -55,7 +55,7 @@ export default function Home() {
 
 				<form className={styles.form}>
 					<p className={styles.description}>
-						Get started pasting the CSV from the submission:
+						Get started by pasting the CSV from the submissions:
 					</p>
 					<textarea
 						id="data"
